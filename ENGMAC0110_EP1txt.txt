@@ -1,0 +1,260 @@
+\documentclass{article}
+\usepackage{multirow}
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[english]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{float}
+
+\title{ENG-MAC0110-EP1}
+\author{Felipe Caram}
+
+\begin{document}
+\maketitle
+
+
+\section{Introduction}
+
+The project done in this program exercise (EP) was to test empirically some sort algorithms for vectors, among them, the algorithms Selection Sort, Bubble Sort, Insertion Sort, Counting Sort and Tim Sort, all of which will be further discussed and explained below. This analysis was done, firstly, by the implementation of those algorithms in Python in order to make a graphical systematization of the performance based on two experiments, which are based respectively on different sized vectors and vectors shuffled by different percentages (for example, an vector of size 100 and 10\% shuffled would have 10 elements out of order), this was all done so that, by the end, it would be possible to know the effectiveness of those algorithms in different situations, all that through experimental bias.
+
+The second part / complement of the program exercise was all about another test, like the two mentioned before but now with the same algorithms, aside Tim Sort, implemented in C, for a verification on the difference in performance between C and Python. For that, in this report was added an entirely new section named "Experiment with C", beyond that, there were changes relative to the first part of the EP, with respect to the image alignment, which were all lost in the text, the tables from experiments 1 and 2 that were not present due to a lost of data from the computer suddenly rebooting, and the conclusion, because I changed my ideas related to some subjects.
+(It is relevant to say that this last part of the introduction talking about changes refers to the first version of this project; as I don't intend on changing the original, I left it there and won't post the first one because this is the later improved version - I will mark things that are related to that with a * just so it is clear).
+
+\section{Materials and Methods}
+
+\subsection{Technical specifications}
+
+The program was ran in a machine with a Ryzen 7 5700x processor, running on factory settings with a maximum clock of 4,6 GHz, and two sticks of 16 Gigabytes of DDR4 ram memory, running on 3200 MHz. The first part of the EP was programmed on Spyder version 5.4 and interpreted by IPython 8.12.3, on version Python 3.8.10. Now the second part was realized through Windows WSL, running a Ubuntu Linux terminal, on version 5.15.153.1-microsoft-standard-WSL2, the library was made directly on the terminal and the program execution on VSCode for Linux x64 opened directly on the terminal and running  Python 3.10.12.
+(Just so you know, the code commented in English will have an ENG in the name of the file)
+
+\subsection{Selection Sort}
+
+The algorithm Selection Sort is probably the simplest among the sort algorithms tested, it consists in a sequence of comparisons realized for each element of an vector V of size n to be sort. Therefore, the algorithm starts comparing V[0] with V[1], V[2], and onwards to the end of the vector, whilst changing the elements if the one from the left is bigger than the one on the right, for example: If V[0] is greater than V[1], the elements change places and the sequence of comparisons continues. By the end of this first sequence, the same process is started, this time with V[1] and this goes forward till the start with V[n-1], which ends the analysis because with all this comparisons it is certain that the vector is sorted in ascending order from left to right. (look at figure 1).
+
+The function of this algorithm receives an vector V and its size n, returning the same vector V sorted in ascending order  from left to right, furthermore, it has quadratic complexity and does not vary with how much shuffled the vector is.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{SelectionSort_ep.png}
+    \caption{Selection Sort}
+    \label{fig:enter-label}
+\end{figure}
+
+\subsection{Bubble Sort}
+
+The algorithm Bubble Sort consists on a chain of comparisons two by two done left to right which changes values only if the right one is lower than the left, in other words, there is an vector V and it compares V[0] with V[1]; V[1] with V[2] and there goes on until V[n-2] with V[n-1], having an vector with size n. After that, the chain repeats with comparisons until V[n-2], following this way forwards until there is a chain with only a comparison of V[0] with V[1]. It is valid to mention that the version implemented was the optimised Bubble algorithm, that has a passage indicator to verify that there was any switch in a chain of comparisons, this way, in case there isn't any changes after the comparisons from V[0] to V[i], being i lower or equal to n, the process ends without going all the way through. (look at figure 2)
+
+The function of this algorithm receives an vector V and its size n and returns the same vector V sorted in ascending order from left to right, beyond that, it has quadratic complexity and varies according to how shuffled the vector is (only with the optimization). 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{BubbleSort_ep.png}
+    \caption{Bubble Sort}
+    \label{fig:enter-label}
+\end{figure}
+
+\subsection{Insertion Sort}
+
+The algorithm Insertion Sort consists in a chain of comparisons that starts analyzing the values of elements 0 and 1 of an vector V, changing the values if the element from the right is lower than the one from that left, after that, compares elements 2 with 1 and 1 with 0, following that until the last case, in which compares n-1 with n-2, n-2 with n-3, [...], 1 with 0. In other words, it does sequences of comparisons two by two of V[i] with V[i-1], until i-1 equals zero. It is valid to say that the implementation is optimized so that in case V[i] is greater than V[i-1], that is, that the two elements don't change value, the following elements V[i-1] and V[i-2] are not compared, since V[i-2] is definitely lower than V[i-1], this way allowing for the algorithm to be much more efficient in less shuffled vectors. (look at figure 3)
+
+The function of this algorithm receives an vector V and it's size n and returns the same vector V sorted in ascending order from left to right, beyond that, it has quadratic complexity and varies with how shuffled the vector is (only with the optimization).
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{InsertionSort_ep.png}
+    \caption{Insertion Sort}
+    \label{fig:enter-label}
+\end{figure}
+
+
+\subsection{Counting Sort}
+
+The algorithm Counting Sort differs from the others mentioned before for being the first one to not have quadratic complexity, being more efficient on the number of comparisons, but having to use more memory from the computer. This algorithm basically searches the highest element of an vector V, with size n, and creates an auxiliary vector H, with size max(V) + 1 and containing only zeros, this way there is a higher use of memory. After that the algorithm will go through all the elements on V and, for each one, will sum +1 to the element with the correspondent index, for example, if V[2] = 1, the algorithm would read that and make H[1] = H[1] + 1. This way, now it is only needed to go through the vector H and recreate V from it, so that the vector H returns to only having zeros, to do that it subtracts from H while adding an element to V with the value corresponding to H index, so that, in the end, we have the vector V sorted in ascending order from left to right.  (look at figure 4)
+
+The function of this algorithm receives an vector V and it's size n, returning the same vector V sorted in ascending order from left to right, beyond that, it has linear complexity and don't change depending on how shuffled the vector is.
+
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{CountingSort_ep.png}
+    \caption{Counting Sort}
+    \label{fig:enter-label}
+\end{figure}
+
+\subsection{Tim Sort}
+
+The Tim Sort algorithm is the native algorithm of Python, which varies based on the situation and size of the vector to be sorted so that it results, in general, in the fastest sort, showing, therefore, superb efficiency.
+
+
+\section{Scientific questions, your analysis and interpretation}
+
+\subsection{Experiment 1}
+
+The first experiment was based on testing the five algorithms proposed before in unsorted vectors ranging from the following sizes: 1000, 5000, 10000, 50000, 100000, to analyse empirically what the complexity of each algorithm represents on the time spent for sorting.
+On that manner, each algorithm was executed on 10 unsorted vectors of each of those sizes, so that the average time to run for each respective vector size was stored, alongside the variance between the values that vectors of the same size took to run, in order to, in the end, unite all that data in a graphic based on the size of the vectors (X axis), and the average time (in seconds) it took to execute each size of vector (Y axis), based on the 10 tests done, and the standard deviation based on the variances in these tests, being represented with bars parallel to the Y axis (although the standard deviation was so small that the bars don't even show up in the graph).
+
+In regard to the graphical analysis, the tendency don't deviate to much from the expected in regard to the complexity of each algorithm, it is shown that on smaller sizes the time averages are quite closed, and they get further and further as the sizes increase. Regarding the algorithms Selection, Bubble and Insertion, we can see the expected for them, which was the formation of a quadratic curve, something expected considering it's quadratic complexity, beyond that, we can see a reasonable growth rate, analysing for example the Bubble on sizes 50000 and 100000, we have that the size doubled, so the number of comparisons quadrupled, showing a reasonable time disparity, with the second one being around 4 time the first one. Whereas the Counting Sort presented an almost linear behavior, and Tim Sort was the most efficient. (see figure 5)
+
+Note that the figure 5 below is not the same figure present on the report sent on EP 1, being made afterwards via a new execution after the data loss mentioned in the introduction.*
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{experimento1.2.png}
+    \caption{Experiment 1}
+    \label{fig:Experimento 1}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|}
+        \hline
+        \multirow{2}{*}{Tamanho do Vetor} & \multicolumn{5}{|c|}{Average time per Sort type (in seconds)} \\
+        \cline{2-6}
+        & Selection & Bubble & Insertion & Counting & TimSort  \\
+        \hline
+        1000 & 0.034375 & 0.040625 & 0.0265625 & 0.0625 & 0.0 \\
+        5000 & 0.8625 & 1.1421875 & 0.6703125 & 0.3375 & 0.0  \\
+        10000 & 3.4109375 & 4.6015625 & 2.6984375 & 0.7 & 0.0015625  \\
+        50000 & 77.88125 & 116.45 & 68.4203125 & 3.5015625 & 0.0046875  \\
+        100000 & 296.6953125 & 462.909375 & 271.034375 & 6.946875 & 0.0046875  \\
+        
+        \hline
+    \end{tabular}
+    \caption{Table Experiment 1}
+    \label{tab:complexa}
+\end{table}
+
+\subsection{Experiment 2}
+
+The second experiment was based on testing the algorithms Bubble Sort, Insertion Sort and Tim Sort on vectors with size 100000 and growing percentage of shuffle, them being 1\%, 3\%, 5\%, 10\%, and 50\%, to analyse empirically how much the disorder impacts on the time that these algorithms, that benefit from a less shuffled vector, take to sort. In that manner, the algorithms were executed in 10 vectors of each disorder percentage, so that the average time  and the variance between values from each percentile of disorder were all stored. Then the results were all gathered in a graph, having the average time to sort in seconds (on the Y axis) and the percentile of disorder (on the X axis) and the standard deviation of the executions for each percentile of disorder on the form of error bars parallel to the Y axis (although the standard deviation was so small that the bars don't even show in the graph).
+
+In regard to the graphical analysis, we have the expected, with both Bubble and Insertion being much less efficient in more shuffled vectors, being the impact on Insertion very heavy and visible. In concern to TimSort, if there is any difference, it couldn't be seen on this size of vectors, as the execution of it was instantaneous independently on the disorder percentile.
+
+
+
+Note that the figure 6 below is not the same figure present on the report sent on EP 1, being made afterwards via a new execution after the data loss mentioned in the introduction.*
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{experimento2.2.png}
+    \caption{Experimento 2}
+    \label{fig:Experiment 2}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|}
+        \hline
+        \multirow{2}{*}{Percentile of shuffle} & \multicolumn{3}{|c|}{Average time per Sort type (in seconds)} \\
+        \cline{2-4}
+        & Bubble & Insertion & TimSort  \\
+        \hline
+        1 & 334.1578125 & 6.9375 & 0.0015625  \\
+        3 & 340.221875 & 20.1578125 & 0.003125  \\
+        5 & 345.53125 & 32.7328125 & 0.003125 \\
+        10 & 359.05 & 61.3328125 & 0.003125  \\
+        50 & 418.034375 & 188.509375 & 0.0078125  \\
+        
+        \hline
+    \end{tabular}
+    \caption{Table Experiment 2}
+    \label{tab:complexa}
+\end{table}
+
+\section{Experiment with C}
+
+\subsection{Description}
+
+This experiment was realized in order to visualize better the real difference between C and Python, in regards to efficiency, considering the speeds of execution.  Therefore, the times of execution of each algorithm implemented in Python was measured, but now they were implemented in C, and the results were compared to the two most efficient algorithms tested before, which were the Counting Sort and Tim Sort. This way, it was possible to compare and analyse those algorithm in C, in the same shape of the first experiment, in other words, implementing them on unsorted vectors ranging sizes from 1000 to 100000.
+For all that, a library was made from scratch, containing every algorithm in C, so that it was possible to import them via the library ctypes, to be compiled and executed along the others in Python, resulting in a graph containing on the X axis the sizes of the vectors and on the Y axis the average time of execution.
+
+
+\subsection{Implementation of the algorithms}
+
+The implementation of the algorithms was quite similar to one realized before in Python, only demanding some small changes to their functionalities, keeping in mind that instead of receiving an vector directly, the functions receive a pointer to the start of the vector. The algorithms implemented were the same from experiment 1, those were: Selection Sort, Bubble Sort, Insertion Sort and Counting Sort, that were nominated with a C on the end so that it is easy to distinct them from the ones in Python, as shown in the figure 7. (it should be said that the optimizations were kept for Bubble and Insertion)
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Captura de tela 2024-06-30 173156.png}
+    \caption{Selection Sort in C}
+    \label{fig:enter-label}
+\end{figure}
+
+\subsection{Creation of the library}
+
+The library was made by the compilation of the code containing the four algorithms implemented in C by the following command: "gcc -shared -fPIC -o libsortings.so complementoep.c", generating a .so file, that was later imported on Python via the Ctypes library, so that, in the end, it could be executed alongside TimSort and Counting Sort(Python).
+
+
+\subsection{Results}
+
+As a result there was the graph showing the average time to sort an the respective sizes of the vectors, along with a table to better understand the average value for each size of vector, it is valid to say that, again, the standard deviation was so little that the error bars were imperceptible. Via graphical analysis we see some patterns similar to the execution purely on Python, having the BubbleC as the worst, followed by SelectionC and then InsertionC, as all of them have quadratic complexity, but the speeds in C were so greater that even the less efficient algorithms were quite close to the second best one in Python, the Counting Sort, although we can see that with greater sizes the distance between the quadratic algorithms and the Counting Sort only increases. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{IMG2.png}
+    \caption{Experiment with C}
+    \label{fig:enter-label}
+\end{figure}
+
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|c|}
+        \hline
+        \multirow{2}{*}{Tamanho do Vetor} & \multicolumn{6}{|c|}{Average time per Sort type (in seconds)} \\
+        \cline{2-7}
+        & SelectionC & BubbleC & InsertionC & CountingC & Counting & TimSort  \\
+        \hline
+        1000 & 0.001181 & 0.001068 & 0.000808 & 8.18e-05 & 0.066102 & 5.9e-05 \\
+        5000 & 0.038968 & 0.024007 & 0.018120 & 0.000436 & 0.313546 & 0.000367  \\
+        10000 & 0.166497 & 0.096565 & 0.069584 & 0.000668 & 0.625725 & 0.000785  \\
+        50000 & 2.764969 & 3.66392 & 1.740630 & 0.003234 & 3.120679 & 0.004749  \\
+        100000 & 8.504406 & 16.25678 & 6.969479 & 0.006202 & 6.22585 & 0.009872  \\
+        
+        \hline
+    \end{tabular}
+    \caption{Table Experiment with C}
+    \label{tab:complexa}
+\end{table}
+
+
+\section{Conclusion}
+
+Finally, we have that this program exercise express empirically the efficiency of the five algorithm aforementioned in distinct situations, allowing for a better visualization of the specificities of each algorithm, what consists a greater or lower complexity and mainly how it affects the time for execution of a designed task, along with the very discrepant time of execution of the algorithms based on the language.
+
+(Below you will find something that is not very common for reports but was asked by the professor which is a personal opinion on the project)
+Personally, I found this part of the EP, in regards to the creation of the algorithms and testing them quite enriching and definitely rewarding, as a fulfilling way to proper examine them, but I can't lie that I was quite frustrated with the auxiliary functions, as I had many consecutive errors and "headaches" but those were certainly needed to better understand the use of libraries. But I certainly must say that I didn't fell that on the complement of the EP (The experiment with C), having the part of auxiliary libraries already done and standardized, making the process much more fluid, being the implementation in C, the creation of the library and the importation and execution in Python, not to say that it was a walk in the park , since I had a lot of trouble being a Windows user, trying to decipher the magic of WSL and Linux, trying to understand how to execute a file that was showing as inexistent and how the mix of two Operational Systems simultaneously work.
+
+Deeper on the problems of EP1, the biggest of them was on the graphical formation, since even researching many forums I couldn't figure out how to name the dots of each algorithm without the addition of arguments on the function GraficaSortings, but really the main problem was to create two graphs on the same main() function, as I had problems with dots overlapping in both graphs, and the biggest issue, which was how to save an image from the graph without substituting the first one saved, something that was only possible by having the function plt.savefig() on the main(), so that it could be used two times, directing at different directories. (Based on that I will send two codes, the first one containing this solution done by me, and the second one using a trick done by some classmates, which is to run the two experiments separately and group them both in the same main, something that would go wrong but doesn't disrupt the sign of the function - I will add the term 'alterado' on the name of the first file so that it is easier to know which is which - this is all relative to EP1 and not to the complement / experiment with C)
+
+In conclusion, some other things happened to me while I made this project, among them a piece of code that literally started to work without any change (simply doing ctrl-C, ctrl-V), a discovery on how processors execute the code, which I found after analysing the process via a benchmark tool called coretemp, seeing that the processor changes the core that process the code many times, something purely logical, after all it don't overheat only one core, but that I had never grasped before, all the learning of WSL, something that came because of the complement of the EP, going from the installation of packets inside Linux terminal to the use of VSCode running natively in a Linux environment inside windows and the execution of programs through the terminal, and, lastly, all the way of writing in LaTeX, how to insert images and create tables, developed by the writing of this report.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

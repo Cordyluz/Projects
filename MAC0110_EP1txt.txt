@@ -1,0 +1,258 @@
+\documentclass{article}
+\usepackage{multirow}
+% Language setting
+% Replace `english' with e.g. `spanish' to change the document language
+\usepackage[portuguese]{babel}
+
+% Set page size and margins
+% Replace `letterpaper' with `a4paper' for UK/EU standard size
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{float}
+
+\title{MAC0110-EP1}
+\author{Felipe Caram}
+
+\begin{document}
+\maketitle
+
+
+\section{Introdução}
+
+O projeto realizado neste exercício programa foi de testar empiricamente alguns algoritmos de ordenação, entre eles, os algoritmos Selection Sort, Bubble Sort, Insertion Sort, Counting Sort e Tim Sort, que serão melhor aprofundados abaixo. Essa análise contou, inicialmente, com a implementação destes algoritmos em Python para uma sistematização gráfica do desempenho destes algoritmos em dois experimentos que levavam em conta, respectivamente, vetores de tamanhos diferentes, vetores de ordenação parcial distintas e a implementação destes algoritmos e, para que, enfim, possa se constatar a efetividade desses algoritmos em diferentes situações, tudo isto por viés experimentalista.
+
+A complementação do exercício programa teve como base um outro teste, similar aos anteriores, mas agora contando com estes mesmos algoritmos, com exceção do Tim Sort, implementados em C, para uma verificação na diferença de performance entre as duas linguagens. Para isso, neste relatório foi adicionada uma nova seção inteira nomeada de "Experimento com C", além disso, foram feitas alterações relativas à primeira parte do EP, quanto ao alinhamento das imagens, que antes estavam todas perdidas pelo texto, a seção de materiais e métodos, as tabelas dos experimentos 1 e 2 que antes não estavam presentes devido a perda de dados por uma reinicialização inesperada do computador e a conclusão, pois eu acabei mudando de ideia quanto a algumas coisas.
+
+\section{Materiais e Métodos}
+
+\subsection{Especificações técnicas}
+
+O programa foi rodado em uma máquina que conta com um processador Ryzen 7 5700x, rodando nas configurações de fábrica com um clock máximo de 4,6 GHz, e dois pentes de 16 Gigabytes de memória Ram DDR4, rodando em 3200 MHz. A primeira parte do EP foi programada na versão 5.4 do Spyder e interpretado pelo IPython 8.12.3, na versão Python 3.8.10. Já a segunda parte foi realizada pelo WSL do windows, rodando um terminal do Linux Ubuntu, na versão 5.15.153.1-microsoft-standard-WSL2, tendo sido a criação da biblioteca diretamente no terminal e a execução do programa no VSCode for Linux x64 aberto diretamente pelo terminal e rodando Python 3.10.12.
+
+\subsection{Selection Sort}
+
+O algoritmo Selection Sort é provavelmente o mais simples dentre os algoritmos de ordenação testados, consiste em uma sequencia de comparações realizada para cada elemento do vetor V  de tamanho n a ser ordenado. Dessa forma, o algoritmo começa comparando V[0] com V[1], V[2], e assim por diante até o fim do vetor, sendo que a cada comparação, será observado qual é o maior elemento, caso o da direita, ou seja, V[i], com i maior que 0, seja maior, nada acontece, caso contrário, troca-se os valores de V[0] com V[i] e continua-se a análise. Dado o encerramento desta sequência, faz-se o mesmo iniciando por V[1] e assim em diante até o início com V[n-1], que encerra a análise pois após todas essas comparações se tem garantia que o vetor está ordenado de forma crescente, da esquerda para a direita. (olhe a figura 1)
+
+A função deste algoritmo recebe um vetor V e seu tamanho n e retorna o mesmo vetor V ordenado de forma crescente da esquerda para a direita, além disso possui complexidade quadrática e não varia com o quão desordenado o vetor está.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{SelectionSort_ep.png}
+    \caption{Selection Sort}
+    \label{fig:enter-label}
+\end{figure}
+
+\subsection{Bubble Sort}
+
+O algoritmo Bubble Sort consiste numa cadeia de comparações dois a dois da esquerda para a direita que troca os valores se o da direita for menor que o da esquerda, em outras palavras, tem-se um vetor V e compara V[0] com V[1]; V[1] com V[2] e assim em diante até V[n-2] com V[n-1], considerando um vetor de tamanho n. Após isso, repete-se a cadeia de comparações até V[n-2], seguindo assim até que reste uma cadeia com a comparação somente de V[0] com V[1]. É valido ressaltar que foi implementada a versão otimizada do algoritmo Bubble, que nesse caso, conta com um indicador de passagem para verificar se houve troca numa dessas cadeias de repetições, dessa forma, caso não tenha havido troca após a execução das comparações de V[0] a V[i], sendo i menor ou igual a n, encerra-se o algoritmo antecipadamente. (olhe a figura 2)
+
+A função deste algoritmo recebe um vetor V e seu tamanho n e retorna o mesmo vetor V ordenado de forma crescente da esquerda para a direita, além disso possui complexidade quadrática e varia com o quão desordenado o vetor está (somente com a otimização).
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{BubbleSort_ep.png}
+    \caption{Bubble Sort}
+    \label{fig:enter-label}
+\end{figure}
+
+\subsection{Insertion Sort}
+
+O algoritmo Insertion Sort consiste em uma cadeia de comparações que começa analizando os valores das casas 0 e 1 de um vetor V, trocando-os se o valor da casa à direita for menor que o da casa à esquerda, em seguida, compara as casas 2 com 1 e então 1 com 0, segue então até o último caso em que compara n-1 com n-2, n-2 com n-3, [. . .] , 1 com 0. Em outras palavras, tem-se sequencias de comparação dois a dois de V[i] com V[i-1], até que i - 1 seja igual a zero. É válido ressaltar que caso V[i] seja maior que V[i-1], isto é, que as duas casas não troquem de valor, as casas V[i-1] e V[i-2] não serão comparadas, afinal já tem-se que V[i-2] é menor que V[i-1], dessa forma permitindo que esse algoritmo possa ser mais eficiente em vetores pouco desordenados. (olhe a figura 3)
+
+A função deste algoritmo recebe um vetor V e seu tamanho n e retorna o mesmo vetor V ordenado de forma crescente da esquerda para a direita, além disso possui complexidade quadrática e varia com o quão desordenado o vetor está (somente com a otimização).
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{InsertionSort_ep.png}
+    \caption{Insertion Sort}
+    \label{fig:enter-label}
+\end{figure}
+
+
+\subsection{Counting Sort}
+
+O algoritmo Counting Sort difere dos outros antes mencionados por ser o primeiro a não ter complexidade quadrática, sendo mais eficiente no quesito número de comparações, porém usando mais memória do computador. Esse algoritmo basicamente seleciona o maior elemento do vetor V, de tamanho n, e cria um vetor auxiliar H, de tamanho max(V) + 1 e contendo somente zeros, dessa forma o gasto maior de memória é necessário. A partir disso, o algoritmo vai passar por todos os valores de V e, para cada um deles, somar mais 1 à casa de indíce correspondente a esse valor em H, exemplificando, se V[2] = 1, o algoritmo ao ler isso faria H[1] = H[1] + 1. Dessa forma, resta ler o vetor H casa a casa e reformular o vetor V, de modo que se zere novamente o vetor H, sendo que para cada subtração em uma casa desse vetor, se adiciona o valor correspondente ao índice dessa casa no vetor V, restando o vetor V ordenado de forma crescente da esquerda para a direita. (olhe a figura 4)
+
+A função deste algoritmo recebe um vetor V e seu tamanho n e retorna o mesmo vetor V ordenado de forma crescente da esquerda para a direita, além disso possui complexidade linear e não varia com o quão desordenado o vetor está.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{CountingSort_ep.png}
+    \caption{Counting Sort}
+    \label{fig:enter-label}
+\end{figure}
+
+\subsection{Tim Sort}
+
+O algoritmo Tim Sort é o algoritmo de ordenação nativo do Python, que varia com base na situação e no tamanho do vetor a ser ordenado para em geral resultar na ordenação mais rápida, apresentando, assim, altíssima eficiência.
+
+\section{Perguntas científicas, sua análise e intrepretação}
+
+\subsection{Experimento 1}
+
+O experimento 1 tinha como base testar os 5 algoritmos propostos acima em vetores desordenados de tamanhos crescentes, passando por tamanhos de 1000, 5000, 10000, 50000 e 100000, para analizar empiricamente o que a complexidade de cada algoritmo representa no tempo gasto para a ordenação. Dessa forma, foram executados os algoritmos em 10 vetores desordenados de cada um destes tamanhos, de modo a armazenar as médias de tempo para executar cada tamanho de vetor e a variância entre os valores que os vetores de mesmo tamanho levaram para executar, para então a união de tudo isso em um gráfico baseado nos tamanhos dos vetores (eixo X), nas médias de tempo para executar cada tamanho de vetor (eixo Y), com base nos 10 testes feitos, e no desvio padrão com base na variância desses testes, sendo representado como barras de erro paralelas ao eixo Y (embora o desvio padrão tenha sido tão minúsculo que as barras sequer apareçam no gráfico).
+
+
+Quanto à análise gráfica, a tendência não foge muito do esperado pela complexidade dos algoritmos, percebe-se nos menores tamanhos um agrupamento das médias de tempo gasto para a ordenação dos vetores, que acabam se distanciando cada vez mais com o aumento deles. Quanto aos algoritmos Selection, Bubble e Insertion, houve o esperado de que eles formaram uma curva de crescimento quadrática, algo esperado em vista de sua complexidade quadrática, além disso, podemos perceber uma taxa de crescimento razoável, analizando por exemplo o Bubble nos tamanhos 50000 e 100000, temos que o tamanho duplicou e, portanto, as comparações quadruplicaram, mostrando uma disparidade de tempo para ordenação razoável, sendo que o tempo médio de ordenação do segundo foi bem próximo de quatro vezes o tempo de ordenação do primeiro. Já o Counting Sort apresentou um comportamento quase linear e o Tim Sort foi o mais eficiente. (Veja a figura 5) 
+
+Note que a figura 5 abaixo não é a mesma figura presente no relatório enviado no EP 1, tendo sido formada posteriormente via uma nova execução após a perda de dados antes mencionada na introdução.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{experimento1.2.png}
+    \caption{Enter Caption}
+    \label{fig:Experimento 1}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|}
+        \hline
+        \multirow{2}{*}{Tamanho do Vetor} & \multicolumn{5}{|c|}{Tempo médio por tipo de Sort (em segundos)} \\
+        \cline{2-6}
+        & Selection & Bubble & Insertion & Counting & TimSort  \\
+        \hline
+        1000 & 0.034375 & 0.040625 & 0.0265625 & 0.0625 & 0.0 \\
+        5000 & 0.8625 & 1.1421875 & 0.6703125 & 0.3375 & 0.0  \\
+        10000 & 3.4109375 & 4.6015625 & 2.6984375 & 0.7 & 0.0015625  \\
+        50000 & 77.88125 & 116.45 & 68.4203125 & 3.5015625 & 0.0046875  \\
+        100000 & 296.6953125 & 462.909375 & 271.034375 & 6.946875 & 0.0046875  \\
+        
+        \hline
+    \end{tabular}
+    \caption{Tabela Experimento 1}
+    \label{tab:complexa}
+\end{table}
+
+\subsection{Experimento 2}
+
+O experimento 2 tinha como base testar os algoritmos Bubble Sort, Insertion Sort e Tim Sort na ordenação de vetores de tamanho 100000 com percentuais de desordem cada vez maiores, sendo eles 1, 3, 5, 10 e 50, de modo a analizar empiricamente o quanto a desordem afeta no tempo de ordenação desses algoritmos que se beneficiam quando o vetor está menos desordenado. Dessa forma, foram executados os algoritmos em 10 vetores de cada percentual de desordem, de modo a armazenar as médias de tempo e a variância entre os valores de execução para cada quantidade de desordem. Então os resultados foram unidos em um gráfico, tendo a média do tempo para a ordenação (no eixo Y), o percentual de desordem (no eixo X) e o desvio padrão das execuções para cada percentual de desordem, na forma de barras de erro paralelas ao eixo Y (embora o desvio padrão tenha sido tão minúsculo que as barras sequer apareçam no gráfico).
+
+
+Quanto à análise gráfica, têm-se o esperado, com tanto o Bubble, quanto o Insertion, sendo bem menos eficientes em vetores mais desordenados, sendo que o impacto no Insertion acabou sendo bem mais aparente. Já quanto ao Tim Sort, caso haja impacto, passou despercebido neste tamanho de vetores, visto que a execução dele foi instantânea independente do percentual de desordem. 
+
+Note que a figura 6 abaixo não é a mesma figura presente no relatório enviado no EP 1, tendo sido formada posteriormente via uma nova execução após a perda de dados antes mencionada na introdução.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{experimento2.2.png}
+    \caption{Experimento 2}
+    \label{fig:enter-label}
+\end{figure}
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|}
+        \hline
+        \multirow{2}{*}{Percentual de desordenação} & \multicolumn{3}{|c|}{Tempo médio por tipo de Sort (em segundos)} \\
+        \cline{2-4}
+        & Bubble & Insertion & TimSort  \\
+        \hline
+        1 & 334.1578125 & 6.9375 & 0.0015625  \\
+        3 & 340.221875 & 20.1578125 & 0.003125  \\
+        5 & 345.53125 & 32.7328125 & 0.003125 \\
+        10 & 359.05 & 61.3328125 & 0.003125  \\
+        50 & 418.034375 & 188.509375 & 0.0078125  \\
+        
+        \hline
+    \end{tabular}
+    \caption{Tabela Experimento 2}
+    \label{tab:complexa}
+\end{table}
+
+\section{Experimento com C}
+
+\subsection{Descrição}
+
+Este experimento foi realizado para uma melhor percepção da real diferença entre C e Python, no quesito eficiência, naquilo que consta às velocidades de execução. Dessa forma, mediu-se os tempos de execução de cada um dos algoritmos implementados em Python, entretanto, agora em C, comparando os resultados com dois algoritmos mais eficientes anteriormente executados(em Python), o Counting Sort e o TimSort. Assim, temos um meio de comparação mais palpável para a análise destes algoritmos em C, aos moldes do experimento 1, isto é, aplicando-os a vetores desordenados de tamanhos indo de 1 a 100000.
+
+Para isso, foi feita uma biblioteca do zero contando com os algoritmos em C, que foram então importados via biblioteca ctypes para serem compilados e executados junto dos outros em Python, resultando em um gráfico contendo no eixo X os tamanhos dos vetores e no eixo Y os tempos médios de execução.
+
+\subsection{Implementação dos algoritmos}
+
+A implementação dos algoritmos foi bem similar a antes realizada em Python, bastando algumas alterações no funcionamento deles, mantendo em mente que ao invés do recebimento de um vetor diretamente, as funções recebem o ponteiro para o inicío de um vetor. Entre os algoritmos implementados, estavam os mesmos do experimento 1, estes são: Selection Sort, Bubble Sort, Insertion Sort e Counting Sort, que foram nomeados com um C no final para distinção, como exemplificado na figura 7. (Vale lembrar que novamente foi executado o bubble otimizado)
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{Captura de tela 2024-06-30 173156.png}
+    \caption{Selection Sort em C}
+    \label{fig:enter-label}
+\end{figure}
+
+\subsection{Criação da biblioteca}
+
+A criação da biblioteca foi feita a partir da compilação do código contendo os quatro algoritmos implementados em C pelo seguinte comando: "gcc -shared -fPIC -o libsortings.so complementoep.c" , gerando um arquivo .so que foi então importado no Python pela biblioteca Ctypes, para, ao fim, ser executado junto do TimSort e do Counting Sort (Python).
+
+
+\subsection{Resultados}
+
+Como resultado tivemos um gráfico mostrando os tempos de ordenação médios e os respectivos tamanhos dos vetores, além de uma tabela para melhor noção dos valores médios de ordenação por tamanho de vetor, é válido ressaltar que, novamente, os desvios padrões foram tão pequenos que as barras de erro são imperceptíveis. Via análise gráfica percebemos alguns padrões similares à execução dos algoritmos puramente em Python, tendo o bubbleC como pior, seguido do selectionC e então o InsertionC, visto que são de complexidade quadrática, porém, a velocidade em C foi tão maior que mesmo os algoritmos menos eficientes não se distanciaram tanto do segundo melhor em Python, o Counting Sort, embora seja perceptível que com vetores cada vez maiores, a distância entre os algoritmos quadráticos do C e o Counting Sort só aumentaria. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{IMG2.png}
+    \caption{Experimento com C}
+    \label{fig:enter-label}
+\end{figure}
+
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|c|c|}
+        \hline
+        \multirow{2}{*}{Tamanho do Vetor} & \multicolumn{6}{|c|}{Tempo médio por tipo de Sort (em segundos)} \\
+        \cline{2-7}
+        & SelectionC & BubbleC & InsertionC & CountingC & Counting & TimSort  \\
+        \hline
+        1000 & 0.001181 & 0.001068 & 0.000808 & 8.18e-05 & 0.066102 & 5.9e-05 \\
+        5000 & 0.038968 & 0.024007 & 0.018120 & 0.000436 & 0.313546 & 0.000367  \\
+        10000 & 0.166497 & 0.096565 & 0.069584 & 0.000668 & 0.625725 & 0.000785  \\
+        50000 & 2.764969 & 3.66392 & 1.740630 & 0.003234 & 3.120679 & 0.004749  \\
+        100000 & 8.504406 & 16.25678 & 6.969479 & 0.006202 & 6.22585 & 0.009872  \\
+        
+        \hline
+    \end{tabular}
+    \caption{Tabela Experimento com C}
+    \label{tab:complexa}
+\end{table}
+
+
+\section{Conclusão}
+
+Por fim, tem-se que este exercício programa expressa empiricamente a eficiência dos cinco algoritmos supracitados em distintas situações, permitindo uma melhor visualização das especificidades de cada algoritmo, do que consiste uma maior ou menor complexidade e principalmente, quanto isso afeta o tempo de execução de determinada tarefa, além do muito discrepante tempo de execução dos algoritmos com base na linguagem. 
+
+Pessoalmente, eu achei essa parte do EP, quanto a criação dos algoritmos e ao teste deles particularmente enriquecedora e certamente recompensante,
+sendo uma forma bem frutífera de examiná-los, porém não posso mentir que em específico quanto as funções auxiliares, acabei ficando meio frustrado, tendo diversos erros consecutivos e "dores de cabeça" mas que ao certo eram necessários para uma base melhor na utilização das bibliotecas. Mas eu certamente devo dizer que o complemento do EP não teve tanto disso, tendo as partes de bibliotecas auxiliares já feitas e padronizadas tornando o processo bem fluido, sendo a implementação em C, a criação da biblioteca e a importação e execução em Python, para não falar que não houve dificuldade alguma, meu maior problema foi ser um usuário de windows tentando "decifrar" a magia do WSL e do sistema Linux, batendo a cabeça para entender como executar o arquivo que estava aparecendo como inexistente e entender como funciona essa mistura de dois sistemas operacionais simultâneos.
+
+Mais afundo nos problemas do EP1, os maiores deles foram na formação gráfica, sendo que mesmo pesquisando não fui capaz de conseguir nomear os pontos de cada algoritmo sem a adição de argumentos a mais na função GraficaSortings, mas o realmente principal foi o de criar os dois gráficos na mesma função main(), em que tive problemas com pontos se sobrepondo entre ambos os gráficos, além do principal, que era como salvar a imagem do gráfico sem substituir a do primeiro pela do segundo, algo que só foi possível para mim ao passar a função plt.savefig() para a main(), para enfim usá-la duas vezes, direcionando a diretórios diferentes. (Com base nisso enviarei dois códigos, o primeiro contendo essa solução feita por mim, e o segundo usando de um artifício que outros colegas meus fizeram que seria rodar separadamente e colocar os dois juntos na mesma main, algo que dá errado mas não distorce a assinatura da função - adicionarei o termo 'alterado' no nome do arquivo do primeiro para que não haja dúvidas de qual é qual - tudo isso é relativo ao EP1 e não ao complemento)
+
+Em conclusão, algumas outras coisas aconteceram enquanto eu fazia esse projeto, entre elas um código que literalmente passou a funcionar sem mudança nenhuma (dando ctrl-c, ctrl-V),
+uma descoberta quanto ao funcionamento de processadores ao executar o código, que descobri ao analizar via uma ferramenta de benchmark chamada coretemp, percebendo que o processador alterna constantemente o núcleo que processa o código, algo totalmente lógico, afinal impede o superaquecimento de um único núcleo em uso, mas que nunca havia passado na minha mente, todo o aprendizado de WSL que veio por consequência do complemento do EP, indo desde a instalação de pacotes dentro do terminal do linux, até o uso do VSCode rodando nativamente em um ambiente Linux dentro do Windows e a execução de programas via terminal, e, por fim, todo o modo de escrita em LaTeX, como inserir imagens e criar tabelas, desenvolvido pela escrita deste relatório.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
